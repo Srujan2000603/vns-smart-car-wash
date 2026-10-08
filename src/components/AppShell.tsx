@@ -11,7 +11,7 @@ const nav = [
   { to: "/buildings", label: "Buildings", icon: Building2 },
   { to: "/staff", label: "Staff", icon: UserCog },
   { to: "/customers", label: "Customers", icon: Car },
-  { to: "/jobs", label: "Cleaning Jobs", icon: CalendarCheck },
+  { to: "/jobs", label: "Weekly Wash Planner", icon: CalendarCheck },
   { to: "/invoices", label: "Invoices", icon: FileText },
   { to: "/payments", label: "Payments", icon: CreditCard },
   { to: "/collections", label: "Collections", icon: HandCoins },
