@@ -1,1 +1,0 @@
-# vns-smart-car-wash
