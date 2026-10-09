@@ -1,18 +1,21 @@
 import { Link } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
-import { LayoutDashboard, Building2, Users, UserCog, Car, CalendarCheck, FileText, CreditCard, HandCoins, History, Smartphone, HardHat, Settings, Menu, X, RotateCcw, Briefcase } from "lucide-react";
+import { LayoutDashboard, Building2, Users, UserCog, Car, CalendarCheck, FileText, CreditCard, HandCoins, History, Smartphone, HardHat, Settings, Menu, X, RotateCcw, Briefcase, CalendarRange, ClipboardList, AlarmClock } from "lucide-react";
 import { actions, useStore } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 const nav = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/companies", label: "Companies", icon: Briefcase },
+  { to: "/companies", label: "Companies", icon: Briefcase, CalendarRange, ClipboardList, AlarmClock },
   { to: "/buildings", label: "Buildings", icon: Building2 },
   { to: "/staff", label: "Staff", icon: UserCog },
   { to: "/customers", label: "Customers", icon: Car },
-  { to: "/jobs", label: "Weekly Wash Planner", icon: CalendarCheck },
+  { to: "/planner", label: "Weekly Planner", icon: CalendarRange },
+  { to: "/roster", label: "Cleaner Roster", icon: ClipboardList },
+  { to: "/jobs", label: "Cleaning Jobs", icon: CalendarCheck },
   { to: "/invoices", label: "Invoices", icon: FileText },
+  { to: "/dues", label: "Dues & Overdue", icon: AlarmClock },
   { to: "/payments", label: "Payments", icon: CreditCard },
   { to: "/collections", label: "Collections", icon: HandCoins },
   { to: "/audit", label: "Audit Log", icon: History },
