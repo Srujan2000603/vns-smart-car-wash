@@ -25,6 +25,14 @@ export async function handleCrewApi(req:Request,env:unknown):Promise<Response>{
  const e={...(env as Env | undefined),...(cloudflareEnv as Env)};const db=e?.DB;
  if(!db)return json({error:"Cloudflare D1 is not configured. Do not use real customer data."},503);
  const path=new URL(req.url).pathname;const method=req.method;
+ if(path==="/api/crew/health"&&method==="GET"){
+   try{
+     const tables=await db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name IN ('crew_users','crew_sessions','crew_jobs')").all<{name:string}>();
+     const present=tables.results.map(x=>x.name);
+     const missing=["crew_users","crew_sessions","crew_jobs"].filter(x=>!present.includes(x));
+     return json({database:"connected",schema:missing.length?"incomplete":"ready",missingTables:missing});
+   }catch(err){console.error("VNS D1 health check error",err);return json({database:"error",error:"Database query failed; inspect Cloudflare Worker logs"},500)}
+ }
  if(method!=="GET"&&!isSameOrigin(req))return json({error:"Cross-site request refused"},403);
  try{
  if(path==="/api/crew/bootstrap"&&method==="POST"){
@@ -97,5 +105,5 @@ export async function handleCrewApi(req:Request,env:unknown):Promise<Response>{
   await db.prepare("INSERT INTO crew_jobs(id,company_id,worker_id,day,building,car_plate,parking,customer_name) VALUES(?,?,?,?,?,?,?,?)").bind(id,u.company_id,b.workerId,b.day,b.building,b.carPlate,b.parking,b.customerName).run();return json({created:true,id},201);
  }
  return json({error:"Unknown API route"},404);
- }catch(err){const msg=String(err);if(msg.includes("UNIQUE constraint"))return json({error:"Record already exists"},409);return json({error:"Request rejected; check setup and database migrations"},500)}
+ }catch(err){console.error("VNS crew API failure",path,err);const msg=String(err);if(msg.includes("UNIQUE constraint"))return json({error:"Record already exists"},409);return json({error:"Request rejected; check setup and database migrations"},500)}
 }
