@@ -27,3 +27,4 @@ npm run dev
 - TypeScript
 - React
 - Tailwind CSS
+- Cloudflare deployment connected — VNS Smart Car Wash
