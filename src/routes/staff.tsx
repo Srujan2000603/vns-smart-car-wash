@@ -44,7 +44,7 @@ function StaffPage() {
               <td className={td + " text-right"}>
                 <Button size="icon" variant="ghost" aria-label={`Edit ${s.name}`} onClick={() => { setErr(""); setForm(s); }}><Pencil className="h-4 w-4" /></Button>
                 <Button size="icon" variant="ghost" aria-label={`Delete ${s.name}`} onClick={() => {
-                  if (a.length) return toast.error(`Reassign ${a.length} customer(s) first.`);
+                  if (a.length) { toast.error(`Reassign ${a.length} customer(s) first.`); return; }
                   if (confirm(`Delete ${s.name}?`)) { actions.remove("staff", s.id); toast.success("Staff deleted"); }
                 }}><Trash2 className="h-4 w-4 text-destructive" /></Button>
               </td>
