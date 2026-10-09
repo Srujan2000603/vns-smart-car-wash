@@ -14,11 +14,13 @@ const today=()=>new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Dubai",year:"num
 function CrewPortal(){
  const [user,setUser]=useState<User|null>(null),[id,setId]=useState(""),[pin,setPin]=useState(""),[date,setDate]=useState(today()),[jobs,setJobs]=useState<Job[]>([]);
  const [error,setError]=useState(""),[busy,setBusy]=useState(false),[reasons,setReasons]=useState<Record<string,string>>({}),[workers,setWorkers]=useState<Array<{id:string;display_name:string}>>([]);
+ const [showSetup,setShowSetup]=useState(false),[setupSecret,setSetupSecret]=useState(""),[setupPin,setSetupPin]=useState(""),[setupName,setSetupName]=useState("VNS Manager");
  const [newWorker,setNewWorker]=useState({id:"",name:"",pin:""}),[newJob,setNewJob]=useState({workerId:"",building:"",carPlate:"",parking:"",customerName:""});
  async function refresh(selected=date){try{const r=await request("jobs?date="+encodeURIComponent(selected));setJobs(r.jobs)}catch(e){setError(String(e))}}
  useEffect(()=>{request("me").then(r=>setUser(r.user)).catch(()=>{});},[]);
  useEffect(()=>{if(user){refresh(date);if(user.role==="admin")request("workers").then(r=>setWorkers(r.workers)).catch(()=>{});const t=setInterval(()=>refresh(date),15000);return()=>clearInterval(t)}},[user,date]);
  async function login(){setBusy(true);setError("");try{const r=await request("login",{method:"POST",body:JSON.stringify({id,pin})});setUser(r.user);setPin("")}catch(e){setError(String(e))}finally{setBusy(false)}}
+ async function createAdmin(){setBusy(true);setError("");try{await request("bootstrap",{method:"POST",headers:{"x-bootstrap-secret":setupSecret},body:JSON.stringify({companyId:"vns",name:setupName,pin:setupPin})});setSetupSecret("");setSetupPin("");setShowSetup(false);setId("ADMIN001");setError("Admin created. Sign in using ADMIN001 and the PIN you chose.")}catch(e){setError(String(e))}finally{setBusy(false)}}
  async function logout(){await request("logout",{method:"POST",body:"{}"}).catch(()=>{});setUser(null);setJobs([]);setWorkers([])}
  async function mark(job:Job,status:"done"|"delayed"|"skipped"){setBusy(true);setError("");try{await request("job-status",{method:"POST",body:JSON.stringify({id:job.id,status,reason:reasons[job.id]||""})});await refresh()}catch(e){setError(String(e))}finally{setBusy(false)}}
  async function addWorker(){setBusy(true);setError("");try{await request("workers",{method:"POST",body:JSON.stringify(newWorker)});setNewWorker({id:"",name:"",pin:""});const r=await request("workers");setWorkers(r.workers)}catch(e){setError(String(e))}finally{setBusy(false)}}
@@ -30,7 +32,16 @@ function CrewPortal(){
    {!user?<section className="max-w-md space-y-4 rounded-xl border bg-white p-5">
     <h2 className="text-lg font-semibold">Employee sign-in</h2><label className="block text-sm">Employee ID<Input autoComplete="username" value={id} onChange={e=>setId(e.target.value)} placeholder="WRK001 or ADMIN001"/></label>
     <label className="block text-sm">PIN (6–12 digits)<Input type="password" inputMode="numeric" autoComplete="current-password" value={pin} onChange={e=>setPin(e.target.value)}/></label>
-    <Button disabled={busy||!id||!/^[0-9]{6,12}$/.test(pin)} onClick={login}>Sign in</Button><p className="text-xs text-slate-500">Accounts must first be created by the manager after setting up the D1 database.</p>
+    <Button disabled={busy||!id||!/^[0-9]{6,12}$/.test(pin)} onClick={login}>Sign in</Button>
+    <p className="text-xs text-slate-500">New installation? Set up the first administrator once using a Cloudflare secret.</p>
+    <button type="button" className="text-sm font-semibold text-teal-700 underline" onClick={()=>setShowSetup(!showSetup)}>{showSetup?"Hide administrator setup":"Create first administrator (one-time setup)"}</button>
+    {showSetup&&<div className="space-y-3 rounded-lg border bg-slate-50 p-3">
+      <p className="text-xs">Enter the BOOTSTRAP_SECRET that you privately saved in Cloudflare. Nothing is saved in your browser or GitHub.</p>
+      <label className="block text-sm">Setup secret<Input type="password" autoComplete="off" value={setupSecret} onChange={e=>setSetupSecret(e.target.value)}/></label>
+      <label className="block text-sm">Manager name<Input value={setupName} maxLength={150} onChange={e=>setSetupName(e.target.value)}/></label>
+      <label className="block text-sm">Choose admin PIN (8–12 digits)<Input type="password" autoComplete="new-password" inputMode="numeric" value={setupPin} onChange={e=>setSetupPin(e.target.value)}/></label>
+      <Button disabled={busy||!setupSecret||!setupName.trim()||!/^[0-9]{8,12}$/.test(setupPin)} onClick={createAdmin}>Initialize ADMIN001</Button>
+    </div>}
    </section>:<>
      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-white p-4"><div><strong>{user.name}</strong><p className="text-xs text-slate-500">{user.id} · {user.role}</p></div><Button variant="outline" onClick={logout}>Sign out</Button></div>
      <div className="rounded-xl border bg-white p-4">{user.role==="admin" ? <label className="text-sm font-semibold">Work date <Input className="mt-1 max-w-xs" type="date" value={date} onChange={e=>setDate(e.target.value)}/></label> : <p className="text-sm font-semibold">Today\x27s assignments · {today()} (Dubai)</p>}<div className="mt-3 grid grid-cols-4 gap-2 text-center text-xs sm:text-sm">{[["Assigned",jobs.length],["Done",done],["Delayed",delayed],["Skipped",skipped]].map(([label,n])=><div key={String(label)} className="rounded-lg bg-slate-100 p-2"><div className="text-xl font-bold">{n}</div>{label}</div>)}</div></div>
