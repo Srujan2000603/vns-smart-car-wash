@@ -1,3 +1,4 @@
+import { env as cloudflareEnv } from "cloudflare:workers";
 type D1Statement={bind:(...x:unknown[])=>D1Statement;first:<T=Record<string,unknown>>()=>Promise<T|null>;all:<T=Record<string,unknown>>()=>Promise<{results:T[]}>;run:()=>Promise<unknown>};
 type DB={prepare:(s:string)=>D1Statement};
 type Env={DB?:DB;BOOTSTRAP_SECRET?:string};
@@ -21,7 +22,7 @@ async function session(req:Request,db:DB):Promise<User|null>{
 }
 function view(u:User){return {id:u.id,name:u.display_name,role:u.role}}
 export async function handleCrewApi(req:Request,env:unknown):Promise<Response>{
- const e=env as Env;const db=e?.DB;
+ const e={...(env as Env | undefined),...(cloudflareEnv as Env)};const db=e?.DB;
  if(!db)return json({error:"Cloudflare D1 is not configured. Do not use real customer data."},503);
  const path=new URL(req.url).pathname;const method=req.method;
  if(method!=="GET"&&!isSameOrigin(req))return json({error:"Cross-site request refused"},403);
