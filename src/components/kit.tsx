@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
-export function PageHeader({ title, desc, children }: { title: string; desc?: string; children?: ReactNode }) {
+export function PageHeader({ title, desc, children }: { title: string; desc?: string | undefined; children?: ReactNode | undefined }) {
   return (
     <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div>
@@ -14,7 +14,7 @@ export function PageHeader({ title, desc, children }: { title: string; desc?: st
   );
 }
 
-export function Panel({ children, className, title, action }: { children: ReactNode; className?: string; title?: string; action?: ReactNode }) {
+export function Panel({ children, className, title, action }: { children: ReactNode; className?: string | undefined; title?: string | undefined; action?: ReactNode | undefined }) {
   return (
     <section className={cn("rounded-xl border bg-card p-4 shadow-sm sm:p-5", className)}>
       {(title || action) && <div className="mb-3 flex items-center justify-between gap-2"><h2 className="text-base font-semibold">{title}</h2>{action}</div>}
@@ -34,7 +34,7 @@ export function Pill({ v }: { v: string }) {
   return <span className={cn("inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize", tones[v] ?? "bg-muted text-muted-foreground")}>{v.replace("-", " ")}</span>;
 }
 
-export function Field({ label, children, hint, error }: { label: string; children: ReactNode; hint?: string; error?: string }) {
+export function Field({ label, children, hint, error }: { label: string; children: ReactNode; hint?: string | undefined; error?: string | undefined }) {
   return (
     <label className="block space-y-1 text-sm">
       <span className="font-medium text-foreground">{label}</span>
@@ -45,7 +45,7 @@ export function Field({ label, children, hint, error }: { label: string; childre
   );
 }
 
-export function Modal({ open, onClose, title, desc, children }: { open: boolean; onClose: () => void; title: string; desc?: string; children: ReactNode }) {
+export function Modal({ open, onClose, title, desc, children }: { open: boolean; onClose: () => void; title: string; desc?: string | undefined; children: ReactNode }) {
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
@@ -56,7 +56,7 @@ export function Modal({ open, onClose, title, desc, children }: { open: boolean;
   );
 }
 
-export function Table({ head, children, empty }: { head: string[]; children: ReactNode; empty?: boolean }) {
+export function Table({ head, children, empty }: { head: string[]; children: ReactNode; empty?: boolean | undefined }) {
   return (
     <div className="overflow-x-auto rounded-lg border">
       <table className="w-full min-w-[640px] text-sm">
@@ -71,7 +71,7 @@ export function Table({ head, children, empty }: { head: string[]; children: Rea
 }
 export const td = "px-3 py-2.5 align-middle";
 
-export function Stat({ label, value, sub }: { label: string; value: string; sub?: string }) {
+export function Stat({ label, value, sub }: { label: string; value: string; sub?: string | undefined }) {
   return (
     <div className="rounded-xl border bg-card p-4 shadow-sm">
       <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
