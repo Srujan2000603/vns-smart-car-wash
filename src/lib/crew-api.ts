@@ -59,6 +59,8 @@ export async function handleCrewApi(req:Request,env:unknown):Promise<Response>{
  if(path==="/api/crew/jobs"&&method==="GET"){
   const date=new URL(req.url).searchParams.get("date");
   if(!validDay(date))return json({error:"Valid date required"},400);
+  const todayDubai=new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Dubai",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
+  if(u.role==="cleaner"&&date!==todayDubai)return json({error:"Cleaners may only view today\x27s assigned jobs"},403);
   const monday=new Date(date+"T00:00:00Z").getUTCDay()===1;
   const sql=u.role==="admin"
    ?"SELECT id,worker_id,day,building,car_plate,parking,customer_name,status,reason,updated_at FROM crew_jobs WHERE company_id=? AND day=? ORDER BY worker_id,building,parking"
