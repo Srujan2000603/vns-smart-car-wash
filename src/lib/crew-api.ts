@@ -6,7 +6,7 @@ const json=(x:unknown,status=200,headers?:HeadersInit)=>new Response(JSON.string
 const bytes=(b:Uint8Array)=>Array.from(b).map(x=>x.toString(16).padStart(2,"0")).join("");
 const random=()=>bytes(crypto.getRandomValues(new Uint8Array(32)));
 async function sha(t:string){return bytes(new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(t))))}
-async function pbkdf(pin:string,salt:string){const k=await crypto.subtle.importKey("raw",new TextEncoder().encode(pin),"PBKDF2",false,["deriveBits"]);return bytes(new Uint8Array(await crypto.subtle.deriveBits({name:"PBKDF2",salt:new TextEncoder().encode(salt),iterations:210000,hash:"SHA-256"},k,256)))}
+async function pbkdf(pin:string,salt:string){const k=await crypto.subtle.importKey("raw",new TextEncoder().encode(pin),"PBKDF2",false,["deriveBits"]);return bytes(new Uint8Array(await crypto.subtle.deriveBits({name:"PBKDF2",salt:new TextEncoder().encode(salt),iterations:100000,hash:"SHA-256"},k,256)))}
 const validPin=(p:unknown)=>typeof p==="string" && /^\d{6,12}$/.test(p);
 const validDay=(d:unknown)=>typeof d==="string" && /^\d{4}-\d{2}-\d{2}$/.test(d)&&!Number.isNaN(Date.parse(d+"T00:00:00Z"));
 const validStr=(s:unknown,max=150)=>typeof s==="string"&&s.trim().length>0&&s.length<=max;
