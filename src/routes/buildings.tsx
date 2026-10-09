@@ -35,7 +35,7 @@ function Buildings() {
               <td className={td + " text-right"}>
                 <Button size="icon" variant="ghost" aria-label={`Edit ${b.name}`} onClick={() => { setErr(""); setForm(b); }}><Pencil className="h-4 w-4" /></Button>
                 <Button size="icon" variant="ghost" aria-label={`Delete ${b.name}`} onClick={() => {
-                  if (n) return toast.error(`Reassign ${n} customer(s) before deleting this building.`);
+                  if (n) { toast.error(`Reassign ${n} customer(s) before deleting this building.`); return; }
                   if (confirm(`Delete ${b.name}?`)) { actions.remove("buildings", b.id); toast.success("Building deleted"); }
                 }}><Trash2 className="h-4 w-4 text-destructive" /></Button>
               </td>
