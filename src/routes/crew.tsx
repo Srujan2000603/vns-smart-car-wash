@@ -31,7 +31,7 @@ function CrewPortal(){
    {error&&<div role="alert" className="rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-800">{error}</div>}
    {!user?<section className="max-w-md space-y-4 rounded-xl border bg-white p-5">
     <h2 className="text-lg font-semibold">Employee sign-in</h2><label className="block text-sm">Employee ID<Input autoComplete="username" value={id} onChange={e=>setId(e.target.value)} placeholder="WRK001 or ADMIN001"/></label>
-    <label className="block text-sm">PIN (6–12 digits)<Input type="password" inputMode="numeric" autoComplete="current-password" value={pin} onChange={e=>setPin(e.target.value)}/></label>
+    <label className="block text-sm">PIN (6–12 digits)<Input type="password" inputMode="numeric" autoComplete="current-password" maxLength={12} value={pin} onChange={e=>setPin(e.target.value.replace(/\D/g,"").slice(0,12))}/></label>
     <Button disabled={busy||!id||!/^[0-9]{6,12}$/.test(pin)} onClick={login}>Sign in</Button>
     <p className="text-xs text-slate-500">New installation? Set up the first administrator once using a Cloudflare secret.</p>
     <button type="button" className="text-sm font-semibold text-teal-700 underline" onClick={()=>setShowSetup(!showSetup)}>{showSetup?"Hide administrator setup":"Create first administrator (one-time setup)"}</button>
@@ -39,8 +39,9 @@ function CrewPortal(){
       <p className="text-xs">Enter the BOOTSTRAP_SECRET that you privately saved in Cloudflare. Nothing is saved in your browser or GitHub.</p>
       <label className="block text-sm">Setup secret<Input type="password" autoComplete="off" value={setupSecret} onChange={e=>setSetupSecret(e.target.value)}/></label>
       <label className="block text-sm">Manager name<Input value={setupName} maxLength={150} onChange={e=>setSetupName(e.target.value)}/></label>
-      <label className="block text-sm">Choose admin PIN (8–12 digits)<Input type="password" autoComplete="new-password" inputMode="numeric" value={setupPin} onChange={e=>setSetupPin(e.target.value)}/></label>
-      <Button disabled={busy||!setupSecret||!setupName.trim()||!/^[0-9]{8,12}$/.test(setupPin)} onClick={createAdmin}>Initialize ADMIN001</Button>
+      <label className="block text-sm">Choose admin PIN (8–12 digits)<Input type="password" autoComplete="new-password" inputMode="numeric" maxLength={12} value={setupPin} onChange={e=>setSetupPin(e.target.value.replace(/\D/g,"").slice(0,12))}/></label>
+      <p className="text-xs text-slate-600" aria-live="polite">PIN: {setupPin.length}/12 digits. {setupPin.length<8?"Enter at least 8 digits.": "PIN length is valid."} {setupSecret.trim()?"Setup secret entered.":"Setup secret is required."}</p>
+      <Button disabled={busy||!setupSecret.trim()||!setupName.trim()||!/^[0-9]{8,12}$/.test(setupPin)} onClick={createAdmin}>Initialize ADMIN001</Button>
     </div>}
    </section>:<>
      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-white p-4"><div><strong>{user.name}</strong><p className="text-xs text-slate-500">{user.id} · {user.role}</p></div><Button variant="outline" onClick={logout}>Sign out</Button></div>
