@@ -16,9 +16,12 @@ import { Route as CollectionsRouteImport } from './routes/collections'
 import { Route as CompaniesRouteImport } from './routes/companies'
 import { Route as CustomerViewRouteImport } from './routes/customer-view'
 import { Route as CustomersRouteImport } from './routes/customers'
+import { Route as DuesRouteImport } from './routes/dues'
 import { Route as InvoicesRouteImport } from './routes/invoices'
 import { Route as JobsRouteImport } from './routes/jobs'
 import { Route as PaymentsRouteImport } from './routes/payments'
+import { Route as PlannerRouteImport } from './routes/planner'
+import { Route as RosterRouteImport } from './routes/roster'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as StaffRouteImport } from './routes/staff'
 import { Route as StaffViewRouteImport } from './routes/staff-view'
@@ -60,6 +63,11 @@ const CustomersRoute = CustomersRouteImport.update({
   path: '/customers',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DuesRoute = DuesRouteImport.update({
+  id: '/dues',
+  path: '/dues',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InvoicesRoute = InvoicesRouteImport.update({
   id: '/invoices',
   path: '/invoices',
@@ -73,6 +81,16 @@ const JobsRoute = JobsRouteImport.update({
 const PaymentsRoute = PaymentsRouteImport.update({
   id: '/payments',
   path: '/payments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlannerRoute = PlannerRouteImport.update({
+  id: '/planner',
+  path: '/planner',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RosterRoute = RosterRouteImport.update({
+  id: '/roster',
+  path: '/roster',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -109,9 +127,12 @@ export interface FileRoutesByFullPath {
   '/companies': typeof CompaniesRoute
   '/customer-view': typeof CustomerViewRoute
   '/customers': typeof CustomersRoute
+  '/dues': typeof DuesRoute
   '/invoices': typeof InvoicesRouteWithChildren
   '/jobs': typeof JobsRoute
   '/payments': typeof PaymentsRoute
+  '/planner': typeof PlannerRoute
+  '/roster': typeof RosterRoute
   '/settings': typeof SettingsRoute
   '/staff': typeof StaffRoute
   '/staff-view': typeof StaffViewRoute
@@ -126,9 +147,12 @@ export interface FileRoutesByTo {
   '/companies': typeof CompaniesRoute
   '/customer-view': typeof CustomerViewRoute
   '/customers': typeof CustomersRoute
+  '/dues': typeof DuesRoute
   '/invoices': typeof InvoicesRouteWithChildren
   '/jobs': typeof JobsRoute
   '/payments': typeof PaymentsRoute
+  '/planner': typeof PlannerRoute
+  '/roster': typeof RosterRoute
   '/settings': typeof SettingsRoute
   '/staff': typeof StaffRoute
   '/staff-view': typeof StaffViewRoute
@@ -144,9 +168,12 @@ export interface FileRoutesById {
   '/companies': typeof CompaniesRoute
   '/customer-view': typeof CustomerViewRoute
   '/customers': typeof CustomersRoute
+  '/dues': typeof DuesRoute
   '/invoices': typeof InvoicesRouteWithChildren
   '/jobs': typeof JobsRoute
   '/payments': typeof PaymentsRoute
+  '/planner': typeof PlannerRoute
+  '/roster': typeof RosterRoute
   '/settings': typeof SettingsRoute
   '/staff': typeof StaffRoute
   '/staff-view': typeof StaffViewRoute
@@ -163,9 +190,12 @@ export interface FileRouteTypes {
     | '/companies'
     | '/customer-view'
     | '/customers'
+    | '/dues'
     | '/invoices'
     | '/jobs'
     | '/payments'
+    | '/planner'
+    | '/roster'
     | '/settings'
     | '/staff'
     | '/staff-view'
@@ -180,9 +210,12 @@ export interface FileRouteTypes {
     | '/companies'
     | '/customer-view'
     | '/customers'
+    | '/dues'
     | '/invoices'
     | '/jobs'
     | '/payments'
+    | '/planner'
+    | '/roster'
     | '/settings'
     | '/staff'
     | '/staff-view'
@@ -197,9 +230,12 @@ export interface FileRouteTypes {
     | '/companies'
     | '/customer-view'
     | '/customers'
+    | '/dues'
     | '/invoices'
     | '/jobs'
     | '/payments'
+    | '/planner'
+    | '/roster'
     | '/settings'
     | '/staff'
     | '/staff-view'
@@ -215,9 +251,12 @@ export interface RootRouteChildren {
   CompaniesRoute: typeof CompaniesRoute
   CustomerViewRoute: typeof CustomerViewRoute
   CustomersRoute: typeof CustomersRoute
+  DuesRoute: typeof DuesRoute
   InvoicesRoute: typeof InvoicesRouteWithChildren
   JobsRoute: typeof JobsRoute
   PaymentsRoute: typeof PaymentsRoute
+  PlannerRoute: typeof PlannerRoute
+  RosterRoute: typeof RosterRoute
   SettingsRoute: typeof SettingsRoute
   StaffRoute: typeof StaffRoute
   StaffViewRoute: typeof StaffViewRoute
@@ -275,6 +314,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CustomersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dues': {
+      id: '/dues'
+      path: '/dues'
+      fullPath: '/dues'
+      preLoaderRoute: typeof DuesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/invoices': {
       id: '/invoices'
       path: '/invoices'
@@ -294,6 +340,20 @@ declare module '@tanstack/react-router' {
       path: '/payments'
       fullPath: '/payments'
       preLoaderRoute: typeof PaymentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/planner': {
+      id: '/planner'
+      path: '/planner'
+      fullPath: '/planner'
+      preLoaderRoute: typeof PlannerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/roster': {
+      id: '/roster'
+      path: '/roster'
+      fullPath: '/roster'
+      preLoaderRoute: typeof RosterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -354,9 +414,12 @@ const rootRouteChildren: RootRouteChildren = {
   CompaniesRoute: CompaniesRoute,
   CustomerViewRoute: CustomerViewRoute,
   CustomersRoute: CustomersRoute,
+  DuesRoute: DuesRoute,
   InvoicesRoute: InvoicesRouteWithChildren,
   JobsRoute: JobsRoute,
   PaymentsRoute: PaymentsRoute,
+  PlannerRoute: PlannerRoute,
+  RosterRoute: RosterRoute,
   SettingsRoute: SettingsRoute,
   StaffRoute: StaffRoute,
   StaffViewRoute: StaffViewRoute,
